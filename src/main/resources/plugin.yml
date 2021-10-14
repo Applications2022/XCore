@@ -1,0 +1,19 @@
+name: XCore
+version: '${project.version}'
+main: de.ruben.xcore.XCore
+api-version: 1.16
+depend: [XDevApi]
+authors: [ Ruben ]
+commands:
+  cash:
+    aliases: [money]
+  pay:
+  eco:
+  bank:
+  adminprofile:
+    aliases: [aprofile]
+  getstorage:
+  storageUpgradeItem:
+  testench:
+  changelog:
+  createchangelog:

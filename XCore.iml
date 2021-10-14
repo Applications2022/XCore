@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>ADVENTURE</platformType>
+        </autoDetectTypes>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.destroystokyo.paper:paper:1.16.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: de.ruben:XDevApi:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-all:5.0.0.Alpha2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.wesjd:anvilgui:1.5.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vavr:vavr:0.9.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vavr:vavr-match:0.9.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.labymod:labymod-api:2.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.labymod.serverapi.common:labymod-widgets:1.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:22.0.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0-rc2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0-rc2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.papermc:paperlib:1.0.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mongodb:mongo-java-driver:3.12.10" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: dev.triumphteam:triumph-gui:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api-plugin:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.cache2k:cache2k-api:1.2.3.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.cache2k:cache2k-core:1.2.3.Final" level="project" />
+  </component>
+</module>
