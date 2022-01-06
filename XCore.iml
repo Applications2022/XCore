@@ -9,7 +9,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_16">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -21,6 +21,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: me.filoghost.holographicdisplays:holographicdisplays-api:3.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.destroystokyo.paper:paper:1.16.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: de.ruben:XDevApi:1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-all:5.0.0.Alpha2" level="project" />
@@ -29,15 +30,41 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.vavr:vavr-match:0.9.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.labymod:labymod-api:2.0.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.labymod.serverapi.common:labymod-widgets:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:22.0.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0-rc2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0-rc2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:23.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0-rc2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.papermc:paperlib:1.0.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mongodb:mongo-java-driver:3.12.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: dev.triumphteam:triumph-gui:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: de.tr7zw:item-nbt-api-plugin:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: org.cache2k:cache2k-api:1.2.3.Final" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.cache2k:cache2k-core:1.2.3.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.22" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okhttp:okhttp:2.7.5" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: com.codepoetics:protonpack:1.16" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.10.10" level="project" />
+    <orderEntry type="library" name="Maven: org.redisson:redisson:3.16.7" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver-dns:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-dns:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.70.Final" level="project" />
+    <orderEntry type="library" name="Maven: javax.cache:cache-api:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex.rxjava3:rxjava:3.0.12" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:jboss-marshalling:2.0.11.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:jboss-marshalling-river:2.0.11.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.12.5" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.5" level="project" />
+    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.27" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.5" level="project" />
+    <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.11.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jodd:jodd-bean:5.1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.jodd:jodd-core:5.1.6" level="project" />
   </component>
 </module>

@@ -28,7 +28,11 @@ public class ChangeLogService {
                 .find()
                 .forEach((Block<? super Document>) document -> {
                     Changelog changelog = new Changelog().fromDocument(document);
-                    changeLogMap.putIfAbsent(changelog.getId(), changelog);
+                    if(changeLogMap.containsKey(changelog.getId())){
+                        changeLogMap.replace(changelog.getId(), changelog);
+                    }else {
+                        changeLogMap.putIfAbsent(changelog.getId(), changelog);
+                    }
                 });
     }
 
@@ -71,6 +75,6 @@ public class ChangeLogService {
     }
 
     private MongoCollection<Document> getCollection(){
-        return getMongoDBStorage().getMongoDatabase().getCollection("Data_Changelogs");
+        return getMongoDBStorage().getMongoClient().getDatabase("ChangeLogs").getCollection("Data_Changelogs");
     }
 }

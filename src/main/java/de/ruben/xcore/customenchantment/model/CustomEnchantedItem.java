@@ -2,21 +2,25 @@ package de.ruben.xcore.customenchantment.model;
 
 import de.ruben.xcore.customenchantment.XEnchantment;
 import de.tr7zw.nbtapi.NBTItem;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class CustomEnchantedItem {
 
     private ItemStack itemStack;
-    private final NBTItem nbtItem;
+    private NBTItem nbtItem;
 
     public CustomEnchantedItem(ItemStack itemStack) {
         this.itemStack = itemStack;
@@ -35,6 +39,16 @@ public class CustomEnchantedItem {
 
     }
 
+    public Map<String, Object> getExtraData(CustomEnchantment customEnchantment){
+        if(customEnchantment.hasExtraData()){
+            NBTItem nbtItem = new NBTItem(itemStack);
+
+            return nbtItem.getObject(customEnchantment.extraDataKey(), Map.class);
+        }else{
+            return new HashMap<>();
+        }
+    }
+
     public Integer getCustomEnchantmentLevel(CustomEnchantment customEnchantment){
         return nbtItem.getInteger(customEnchantment.getItemKey());
     }
@@ -44,56 +58,140 @@ public class CustomEnchantedItem {
     }
 
     public void addEnchantment(CustomEnchantment customEnchantment, int level, int slot, Inventory inventory){
-        nbtItem.setInteger(customEnchantment.getItemKey(), level);
-        itemStack = nbtItem.getItem();
-        repopulateStack();
+
+        itemStack = customEnchantment.enchantItem(itemStack, level);
+        nbtItem = new NBTItem(itemStack);
+        this.itemStack = repopulateStack();
+        nbtItem = new NBTItem(itemStack);
+
+        if(!itemStack.getItemMeta().hasEnchants() && !getCustomEnchantments().isEmpty()){
+            itemStack.addUnsafeEnchantment(Enchantment.LURE, 1);
+            itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        nbtItem = new NBTItem(itemStack);
+
         inventory.setItem(slot, itemStack);
     }
 
-    public void removeEnchantment(CustomEnchantment customEnchantment, int slot){
-        nbtItem.removeKey(customEnchantment.getItemKey());
-        itemStack = nbtItem.getItem();
-        repopulateStack();
+    public void addEnchantment(CustomEnchantment customEnchantment, int level){
+
+        if(!itemStack.getItemMeta().hasEnchants()){
+            itemStack.addUnsafeEnchantment(Enchantment.LURE, 1);
+            itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        itemStack = customEnchantment.enchantItem(itemStack, level);
+        nbtItem = new NBTItem(itemStack);
+        this.itemStack = repopulateStack();
+        nbtItem = new NBTItem(itemStack);
     }
 
-    ItemStack repopulateStack(){
-        itemStack.editMeta(itemMeta -> {
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
+    public void removeEnchantment(CustomEnchantment customEnchantment, int slot, Inventory inventory){
+        itemStack = customEnchantment.disenchantItem(itemStack);
+        nbtItem = new NBTItem(itemStack);
+        this.itemStack = repopulateStack();
+        nbtItem = new NBTItem(itemStack);
 
-            List<Component> newLore = new ArrayList<>();
+        Map<Enchantment, Integer> enchants = itemStack.getEnchantments();
+        enchants.remove(Enchantment.LURE);
+        if(getCustomEnchantments().isEmpty()){
+            itemStack.removeItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        }
+        if(enchants.isEmpty() && getCustomEnchantments().isEmpty()){
+            itemStack.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemStack.removeEnchantment(Enchantment.LURE);
+        }
 
+        inventory.setItem(slot, itemStack);
+    }
 
-            newLore.add(Component.text("§bVerzauberungen:"));
-            itemStack.getEnchantments().forEach((enchantment, integer) -> newLore.add(Component.text("§7➥ "+ XEnchantment.getEnchantmentNames().get(enchantment)+": §b"+integer)));
-            getCustomEnchantments().forEach((customEnchantment, integer) -> newLore.add(Component.text(customEnchantment.getLore(integer))));
+    public ItemStack repopulateStack(){
 
-            if(itemMeta.hasLore()){
-                newLore.add(Component.text("§0 "));
+        if(!itemStack.getItemMeta().hasEnchants() && getCustomEnchantments().isEmpty()){
+            return itemStack;
+        }
 
-                List<String> oldLore = itemMeta.getLore();
-                if(oldLore.contains("§bVerzauberungen:")) {
-                    int startIndex = oldLore.indexOf("§0 ")+1;
-                    if(oldLore.size() < startIndex) {
-                        List<String> subList = oldLore.subList(startIndex, oldLore.size());
-                        newLore.addAll(subList.stream().map(Component::text).collect(Collectors.toList()));
-                    }
-                }else {
-                    if(oldLore.size() == 1 && oldLore.get(0).equals(" ")) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
 
-                    }else{
-                        newLore.addAll(oldLore.stream().map(Component::text).collect(Collectors.toList()));
-                    }
-                }
+        List<String> itemLore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+
+        List<String> customLore = new ArrayList<>();
+
+        for(int i = itemLore.size()-1; i >= 0; i--){
+            if(!itemLore.get(i).equals("§d ") && !itemLore.get(i).equals("§c ") && !itemLore.get(i).equals("§b ") && !itemLore.get(i).equals("§a ")){
+                customLore.add(itemLore.get(i));
+            }else{
+                break;
             }
+        }
 
-            itemMeta.lore(newLore);
-            itemStack.setItemMeta(itemMeta);
+        List<String> weiteresListe = new ArrayList<>();
+        List<String> effekteList = new ArrayList<>();
+        List<String> verzauberungen = new ArrayList<>();
 
+        HashMap<CustomEnchantment, Integer> enchants = getCustomEnchantments();
+
+        Comparator<CustomEnchantment> comparator = Comparator.<CustomEnchantment, Boolean>comparing(s -> s.getLore(enchants.get(s)).contains(":")).reversed();
+
+        itemStack.getEnchantments().forEach((enchantment, integer) -> {
+            if(!enchantment.getKey().equals(Enchantment.LURE.getKey())){
+                verzauberungen.add("§7➥ "+ XEnchantment.getEnchantmentNames().get(enchantment)+": §b"+integer);
+            }
         });
+
+        enchants
+                .keySet()
+                .stream()
+                .sorted(Comparator.comparing(enchants::get))
+                .sorted(comparator)
+                .forEach(customEnchantment -> {
+                    int integer = enchants.get(customEnchantment);
+                    if(customEnchantment.getWeiteresLore(integer) != null) weiteresListe.add(customEnchantment.getWeiteresLore(integer));
+                    if(customEnchantment.getEffekteLore(integer) != null) effekteList.add(customEnchantment.getEffekteLore(integer));
+                    verzauberungen.add(customEnchantment.getLore(integer));
+                });
+
+
+
+        List<String> finalLore = new ArrayList<>();
+        if(!verzauberungen.isEmpty()){
+            finalLore.add("§bVerzauberungen:");
+        }
+        finalLore.addAll(verzauberungen);
+        if(!verzauberungen.isEmpty()){
+            finalLore.add("§a ");
+        }
+        if(!effekteList.isEmpty()){
+            finalLore.add("§bEffekte:");
+        }
+        finalLore.addAll(effekteList);
+        if(!effekteList.isEmpty()){
+            finalLore.add("§b ");
+        }
+        if(!weiteresListe.isEmpty()){
+            finalLore.add("§bWeiteres:");
+        }
+        finalLore.addAll(weiteresListe);
+        if(!weiteresListe.isEmpty()){
+            finalLore.add("§c ");
+        }
+
+        finalLore.addAll(customLore);
+
+
+
+        itemMeta.lore(finalLore.stream().map(Component::text).collect(Collectors.toList()));
+        itemStack.setItemMeta(itemMeta);
+
+        getCustomEnchantments().forEach((customEnchantment, integer) -> {
+            itemStack = customEnchantment.repopulateExtraData(itemStack);
+        });
+
+        itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
 
         return itemStack;
     }
-
 
     public ItemStack getItemStack() {
         return itemStack;

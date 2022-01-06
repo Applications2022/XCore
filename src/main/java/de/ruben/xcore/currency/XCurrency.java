@@ -26,37 +26,29 @@ public class XCurrency implements SubSystem {
 
     private static XCurrency instance;
 
-    private MongoDBStorage mongoDBStorage;
-
-
     private CashService cashService;
 
     private BankService bankService;
 
-    private Cache<UUID, BankAccount> bankAccountCache;
-
-    private Cache<UUID, CashAccount> cashAccountCache;
+//    private Cache<UUID, BankAccount> bankAccountCache;
+//
+//    private Cache<UUID, CashAccount> cashAccountCache;
 
     @Override
     public void onEnable(){
         instance = this;
-
-//        this.mongoDBStorage = new MongoDBStorage(XDevApi.getInstance(), "localhost", "Currency", 27017, MongoClientOptions.builder().codecRegistry(CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(), CodecRegistries.fromCodecs(new TransactionCodec()))).build());
-        this.mongoDBStorage = new MongoDBStorage(XDevApi.getInstance(), 10, "localhost", "Currency", 27017, "currency", "wrgO4FTbV6UyLwtMzfsp", MongoClientOptions.builder().codecRegistry(CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(), CodecRegistries.fromCodecs(new TransactionCodec()))).build());
-
-        mongoDBStorage.connect();
-
-        bankAccountCache = Cache2kBuilder.of(UUID.class, BankAccount.class)
-                .name("bankCache")
-                .eternal(true)
-                .entryCapacity(150)
-                .build();
-
-        this.cashAccountCache = Cache2kBuilder.of(UUID.class, CashAccount.class)
-                .name("cashCache")
-                .eternal(true)
-                .entryCapacity(150)
-                .build();
+//
+//        bankAccountCache = Cache2kBuilder.of(UUID.class, BankAccount.class)
+//                .name("bankCache")
+//                .eternal(true)
+//                .entryCapacity(150)
+//                .build();
+//
+//        this.cashAccountCache = Cache2kBuilder.of(UUID.class, CashAccount.class)
+//                .name("cashCache")
+//                .eternal(true)
+//                .entryCapacity(150)
+//                .build();
 
         this.cashService = new CashService();
         this.bankService = new BankService();
@@ -73,9 +65,11 @@ public class XCurrency implements SubSystem {
 
     @Override
     public void onDisable(){
-        getMongoDBStorage().disconnect();
-        getBankAccountCache().clearAndClose();
-        getCashAccountCache().clearAndClose();
+//        getBankAccountCache().clearAndClose();
+//        getCashAccountCache().clearAndClose();
+
+        new CashService().clearCache();
+        new BankService().deleteCache();
     }
 
     public static XCurrency getInstance() {
@@ -83,16 +77,16 @@ public class XCurrency implements SubSystem {
     }
 
     public MongoDBStorage getMongoDBStorage() {
-        return mongoDBStorage;
+        return XCore.getInstance().getMongoDBStorage();
     }
 
-    public Cache<UUID, BankAccount> getBankAccountCache() {
-        return bankAccountCache;
-    }
-
-    public Cache<UUID, CashAccount> getCashAccountCache() {
-        return cashAccountCache;
-    }
+//    public Cache<UUID, BankAccount> getBankAccountCache() {
+//        return bankAccountCache;
+//    }
+//
+//    public Cache<UUID, CashAccount> getCashAccountCache() {
+//        return cashAccountCache;
+//    }
 
     public CashService getCashService() {
         return cashService;

@@ -29,6 +29,8 @@ public class ChangelogGui extends Gui {
     public ChangelogGui(XChangelog xChangelog, Player player) {
         super(6, "§9§lChangelogs", Set.of(InteractionModifier.PREVENT_ITEM_PLACE, InteractionModifier.PREVENT_ITEM_SWAP, InteractionModifier.PREVENT_ITEM_TAKE));
 
+        this.setDefaultClickAction(event -> event.setCancelled(true));
+
         this.xChangelog = xChangelog;
         this.paginatedArrayList = new PaginatedArrayList(xChangelog.getChangeLogService().getChangeLogsNewestFirst(), 28);
         this.disableAllInteractions();

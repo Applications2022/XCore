@@ -1,5 +1,6 @@
 package de.ruben.xcore.customenchantment.model.enchantment;
 
+import de.ruben.xcore.customenchantment.model.CustomEnchantedItem;
 import de.ruben.xcore.customenchantment.model.CustomEnchantment;
 import de.ruben.xdevapi.XDevApi;
 import de.ruben.xdevapi.util.type.StackPile;
@@ -14,11 +15,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TelekinesisEnchant extends CustomEnchantment {
+
 
     public TelekinesisEnchant() {
         super("telekinesis");
@@ -26,11 +27,6 @@ public class TelekinesisEnchant extends CustomEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 1;
-    }
-
-    @Override
-    public int getStarterLevel() {
         return 1;
     }
 
@@ -52,11 +48,6 @@ public class TelekinesisEnchant extends CustomEnchantment {
     @Override
     public boolean canEnchantItem(@NotNull ItemStack var1) {
         return enchantmentTarget().includes(var1);
-    }
-
-    @Override
-    public @NotNull Component displayName() {
-        return Component.text("§bTelekinesis");
     }
 
     @Override
@@ -83,34 +74,72 @@ public class TelekinesisEnchant extends CustomEnchantment {
 
     @Override
     public String getLore(int level) {
-        return "§7➥ Telekinesis: §b"+level;
+        return "§7➥ Telekinesis";
     }
 
     @Override
     public String getLore() {
-        return "§7➥ Telekinesis:";
+        return "§7➥ Telekinesis";
+    }
+
+    @Override
+    public String getWeiteresLore(int level) {
+        return null;
+    }
+
+    @Override
+    public String getEffekteLore(int level) {
+        return null;
     }
 
     @Override
     public void handleEvent(Event event, int enchantmentLevel) {
+
         if(event instanceof BlockBreakEvent){
             BlockBreakEvent blockBreakEvent = (BlockBreakEvent) event;
 
             blockBreakEvent.setDropItems(false);
 
-            List<StackPile> stackPile = blockBreakEvent.getBlock().getDrops(blockBreakEvent.getPlayer().getInventory().getItemInMainHand()).stream().map(StackPile::new).collect(Collectors.toCollection(ArrayList::new));
+            CustomEnchantedItem customEnchantedItem = new CustomEnchantedItem(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
 
-            if(XDevApi.getInstance().getxUtil().getBukkitInventoryUtil().hasStorageContentSpaceFor(blockBreakEvent.getPlayer().getInventory(), stackPile.toArray(new StackPile[0]))){
-                blockBreakEvent.getPlayer().getInventory().addItem(blockBreakEvent.getBlock().getDrops(blockBreakEvent.getPlayer().getInventory().getItemInMainHand()).toArray(new ItemStack[stackPile.size()]));
-            }else{
-                stackPile.forEach(stackPile1 -> blockBreakEvent.getBlock().getWorld().dropItemNaturally(blockBreakEvent.getBlock().getLocation(), stackPile1.getStack()));
+            Collection<ItemStack> drops = getDrops(blockBreakEvent.getBlock().getDrops(customEnchantedItem.getItemStack()), customEnchantedItem);
+
+            List<StackPile> stackPile = drops.stream().map(StackPile::new).collect(Collectors.toCollection(ArrayList::new));
+
+            if(stackPile.size() > 0) {
+                if (XDevApi.getInstance().getxUtil().getBukkitInventoryUtil().hasStorageContentSpaceFor(blockBreakEvent.getPlayer().getInventory(), stackPile.toArray(new StackPile[0]))) {
+                    blockBreakEvent.getPlayer().getInventory().addItem(drops.toArray(new ItemStack[stackPile.size()]));
+                } else {
+                    stackPile.forEach(stackPile1 -> blockBreakEvent.getBlock().getWorld().dropItemNaturally(blockBreakEvent.getBlock().getLocation(), stackPile1.getStack()));
+                }
             }
         }
     }
 
-    @Override
-    public boolean canHandle(Event event) {
-        return false;
+    private Collection<ItemStack> getDrops(Collection<ItemStack> drops, CustomEnchantedItem customEnchantedItem){
+
+        if(customEnchantedItem.hasCustomEnchantment(CustomEnchantment.SMELT)){
+
+            return drops.stream().map(itemStack -> {
+                if(itemStack.getType().name().toLowerCase().endsWith("ore")){
+
+                    String newMaterialName = itemStack.getType().name().toUpperCase().replace("_ORE", "");
+
+                    if(Material.getMaterial(newMaterialName) == null){
+                        newMaterialName = newMaterialName+"_INGOT";
+                    }
+
+                    return new ItemStack(Material.getMaterial(newMaterialName), itemStack.getAmount());
+
+
+                }else{
+                    return itemStack;
+                }
+            }).collect(Collectors.toList());
+
+        }else{
+            return drops;
+        }
     }
 
 }

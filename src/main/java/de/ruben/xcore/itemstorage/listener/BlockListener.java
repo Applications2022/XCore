@@ -65,6 +65,9 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+
+        if(event.isCancelled()) return;
+
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
@@ -88,6 +91,9 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
+
+        if(event.isCancelled()) return;
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getHand() == EquipmentSlot.HAND) {
             Player player = event.getPlayer();
 

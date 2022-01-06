@@ -20,8 +20,6 @@ import java.util.UUID;
 
 public class XProfile implements SubSystem {
 
-    private MongoDBStorage mongoDBStorage;
-
     private static XProfile instance;
 
     private Cache<UUID, PlayerProfile> profileCache;
@@ -29,10 +27,6 @@ public class XProfile implements SubSystem {
     @Override
     public void onEnable(){
         instance = this;
-//        this.mongoDBStorage = new MongoDBStorage(XDevApi.getInstance(), "localhost", "Profile", 27017, MongoClientOptions.builder().codecRegistry(MongoClient.getDefaultCodecRegistry()).build());
-        this.mongoDBStorage = new MongoDBStorage(XDevApi.getInstance(), 10, "localhost", "Currency", 27017, "currency", "wrgO4FTbV6UyLwtMzfsp", MongoClientOptions.builder().codecRegistry(CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(), CodecRegistries.fromCodecs(new TransactionCodec()))).build());
-
-        mongoDBStorage.connect();
 
         this.profileCache = Cache2kBuilder.of(UUID.class, PlayerProfile.class)
                 .name("profileCache")
@@ -51,12 +45,11 @@ public class XProfile implements SubSystem {
 
         profileService.getCache().keys().forEach(profileService::pushProfile);
 
-        mongoDBStorage.disconnect();
         profileCache.close();
     }
 
     public MongoDBStorage getMongoDBStorage() {
-        return mongoDBStorage;
+        return XCore.getInstance().getMongoDBStorage();
     }
 
     public static XProfile getInstance() {

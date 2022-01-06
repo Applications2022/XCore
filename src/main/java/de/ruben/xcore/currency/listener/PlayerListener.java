@@ -4,8 +4,9 @@ import de.ruben.xcore.currency.XCurrency;
 import de.ruben.xcore.itemstorage.XItemStorage;
 import de.ruben.xdevapi.XDevApi;
 import de.ruben.xdevapi.labymod.display.EconomyDisplay;
-import de.ruben.xdevapi.message.MessageService;
+import de.ruben.xdevapi.message.MessageService; 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,7 +19,7 @@ public class PlayerListener implements Listener {
 
     private final ExecutorService executorService = XItemStorage.getInstance().getExecutorService();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent event){
         event.getPlayer().sendMessage(messageService.getMessage("prefix")+"§7Deine Daten werden geladen...");
         executorService.execute(() -> {
@@ -30,7 +31,7 @@ public class PlayerListener implements Listener {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onQuit(PlayerQuitEvent event){
         executorService.execute(() -> {
             XCurrency.getInstance().getCashService().removeCacheEntry(event.getPlayer().getUniqueId());

@@ -2,7 +2,7 @@ name: XCore
 version: '1.0-SNAPSHOT'
 main: de.ruben.xcore.XCore
 api-version: 1.16
-depend: [XDevApi]
+depend: [XDevApi, PlaceholderAPI, HolographicDisplays]
 authors: [ Ruben ]
 commands:
   cash:
@@ -17,3 +17,16 @@ commands:
   testench:
   changelog:
   createchangelog:
+  editchangelog:
+  adminenchant:
+    aliases: [ae]
+  aktien:
+  job:
+  nextevent:
+  admintutorial:
+    aliases: [at]
+  tutorialcenter:
+    aliases: [ tutc ]
+  clan:
+  admingamble:
+  gamble:

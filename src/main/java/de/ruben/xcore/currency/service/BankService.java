@@ -2,16 +2,21 @@ package de.ruben.xcore.currency.service;
 
 import com.google.common.collect.Lists;
 import com.mongodb.client.model.Filters;
+import de.ruben.xcore.XCore;
 import de.ruben.xcore.currency.XCurrency;
 import de.ruben.xcore.currency.account.BankAccount;
+import de.ruben.xcore.currency.account.CashAccount;
 import de.ruben.xcore.currency.account.type.Transaction;
 import de.ruben.xdevapi.XDevApi;
 import de.ruben.xdevapi.storage.MongoDBStorage;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.cache2k.Cache;
+import org.redisson.api.RMapCache;
+import org.redisson.codec.JsonJacksonCodec;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -177,7 +182,6 @@ public class BankService {
             accessGrantedAccounts.remove(accountUUID);
 
             bankAccount.setAccessGrantedAccounts(accessGrantedAccounts);
-            System.out.println("Ausgeführt! : "+bankAccount.getAccessGrantedAccounts());
 
 
             callback.accept(updateBankAccount(uuid, bankAccount));
@@ -190,7 +194,9 @@ public class BankService {
 
         transactions.add(transaction);
 
-        bankAccount.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+        List<Transaction> list = Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())).stream().collect(Collectors.toList());
+
+        bankAccount.setTransactions(list);
 
         return updateBankAccount(uuid, bankAccount);
     }
@@ -203,7 +209,9 @@ public class BankService {
             transactions.remove(transaction);
         }
 
-        bankAccount.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+        List<Transaction> list = Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())).stream().collect(Collectors.toList());
+
+        bankAccount.setTransactions(list);
 
         return updateBankAccount(uuid, bankAccount);
     }
@@ -214,7 +222,9 @@ public class BankService {
 
             transactions.add(transaction);
 
-            bankAccount.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+            List<Transaction> list = Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())).stream().collect(Collectors.toList());
+
+            bankAccount.setTransactions(list);
 
 
              callback.accept(updateBankAccount(uuid, bankAccount));
@@ -229,7 +239,9 @@ public class BankService {
                 transactions.remove(transaction);
             }
 
-            bankAccount.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+            List<Transaction> list = Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())).stream().collect(Collectors.toList());
+
+            bankAccount.setTransactions(list);
 
             callback.accept(updateBankAccount(uuid, bankAccount));
         });
@@ -359,6 +371,7 @@ public class BankService {
 
 
 
+    //TODO error Fixen
     public BankAccount getAccount(UUID uuid){
         if(getCache().containsKey(uuid)){
             return getCache().get(uuid);
@@ -460,11 +473,19 @@ public class BankService {
         return bankAccount;
     }
 
+    public void deleteCache(){
+        getCache().delete();
+    }
+
     public MongoDBStorage getMongoDBStorage(){
         return XCurrency.getInstance().getMongoDBStorage();
     }
 
-    public Cache<UUID, BankAccount> getCache(){
-        return XCurrency.getInstance().getBankAccountCache();
+//    public Cache<UUID, BankAccount> getCache(){
+//        return XCurrency.getInstance().getBankAccountCache();
+//    }
+
+    private RMapCache<UUID, BankAccount> getCache(){
+        return XCore.getInstance().getRedissonClient().getMapCache("bankUsers", new JsonJacksonCodec());
     }
 }

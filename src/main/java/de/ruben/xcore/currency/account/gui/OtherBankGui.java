@@ -220,7 +220,7 @@ public class OtherBankGui extends Gui {
             List<Transaction> transactions = bankAccount1.getTransactions();
             transactions.add(new Transaction(true, aDouble, player.getUniqueId(), new Date(System.currentTimeMillis())));
 
-            bankAccount1.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+            bankAccount1.setTransactions((ArrayList<Transaction>) Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
             bankAccount1.setValue(bankAccount1.getValue()+aDouble);
 
             XCurrency.getInstance().getBankService().updateBankAccount(playerUUID, bankAccount1);
@@ -237,7 +237,10 @@ public class OtherBankGui extends Gui {
         List<Transaction> transactions = bankAccount1.getTransactions();
         transactions.add(new Transaction(false, aDouble, player.getUniqueId(), new Date(System.currentTimeMillis())));
 
-        bankAccount1.setTransactions(Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())));
+        List<Transaction> list = Lists.reverse(Lists.reverse(transactions).stream().limit(10).collect(Collectors.toList())).stream().collect(Collectors.toList());
+
+        bankAccount1.setTransactions(list);
+
         bankAccount1.setValue(bankAccount1.getValue()-aDouble);
 
         XCurrency.getInstance().getBankService().updateBankAccount(targetUUID, bankAccount1, bankAccount -> XCurrency.getInstance().getCashService().addValue(player.getUniqueId(), aDouble, cashAccount2 -> {
